@@ -1,4 +1,5 @@
 #include "monty.h"
+#include <string.h>
 
 /**
  * main - monty interperter
@@ -34,6 +35,7 @@ int main(int ac, char *av[])
 	fclose(fd);
 	return (0);
 }
+<<<<<<< HEAD
 
 /**
  * execute - executes opcodes
@@ -84,3 +86,5 @@ void execute(char *string[], stack_t *stack)
 	}
 	free_stack(stack);
 }
+=======
+>>>>>>> 442a064304c5303d00f89cc3860fc6b613164635
