@@ -1,16 +1,49 @@
 #include "monty.h"
-stack_t *head = NULL;
+
+char *flag = "stack";
 
 /**
- * main - Entry Point
- * @argc: Number of command line arguments.
- * @argv: An array containing the arguments.
- * Return: Always Zero.
+ * main - main function to run monty
+ * @ac: number of arguments
+ * @av: list of arguments as strings
+ *
+ * Return: 0
  */
-int main(int argc, char **argv)
+int main(int ac, char **av)
 {
-	if (argc < 2 || argc > 2)
-		err(1);
-	open_file(argv[1]);
+	stack_t *h;
+	unsigned int line_number;
+	ssize_t status;
+	char *line;
+	size_t length;
+	FILE *fp;
+
+	if (ac != 2)
+	{
+		printf("USAGE: %s file\n", av[0]);
+		exit(EXIT_FAILURE);
+	}
+	h = NULL;
+	fp = fopen(av[1], "r");
+	if (fp == NULL)
+	{
+		printf("Error: Can't open file %s\n", av[1]);
+		exit(EXIT_FAILURE);
+	}
+	line_number = 0;
+	do {
+		++line_number;
+		line = NULL;
+		length = 0;
+		status = getline(&line, &length, fp);
+		if (status > 0)
+			execute(&h, line, line_number);
+		else
+			free(line);
+	} while (status >= 0);
+
+	fclose(fp);
+	free_stack(h);
+
 	return (0);
 }

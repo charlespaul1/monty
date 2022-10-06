@@ -1,14 +1,15 @@
-#ifndef __MONTY__H
-#define __MONTY__H
+#ifndef _MONTY_H_
+#define _MONTY_H_
 
 #include <stdio.h>
-#include <unistd.h>
-#include <string.h>
 #include <stdlib.h>
-#include <ctype.h>
-#include <stdarg.h>
+#include <unistd.h>
 
+/*extern variable, stack or queue*/
 
+extern char *flag;
+
+#define LINE_LENGTH 32
 
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
@@ -21,9 +22,9 @@
  */
 typedef struct stack_s
 {
-	int n;
-	struct stack_s *prev;
-	struct stack_s *next;
+        int n;
+        struct stack_s *prev;
+        struct stack_s *next;
 } stack_t;
 
 /**
@@ -36,32 +37,58 @@ typedef struct stack_s
  */
 typedef struct instruction_s
 {
-	char *opcode;
-	void (*f)(stack_t **stack, unsigned int line_number);
+        char *opcode;
+        void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
 
-extern stack_t *head;
-
-/*File operations*/
-void open_file(char *);
-void read_file(FILE *);
-int len_chars(FILE *);
-void interpret_line(char *, int);
-void find_func(char *, char *, int);
-
-/*Stack operations*/
-stack_t *create_node(int n);
-void print_stack(stack_t **, unsigned int);
-void add_to_stack(stack_t **, unsigned int);
-void call_fun(void (*f)(stack_t **, unsigned int), char *, char *, int);
-void print_top(stack_t **, unsigned int);
-void pop_top(stack_t **, unsigned int);
-void nop(stack_t **, unsigned int);
-void swap_nodes(stack_t **, unsigned int);
-void add_nodes(stack_t **, unsigned int);
-
-/*Error hanlding*/
-void err(int error_code, ...);
 
 
-#endif /*__MONTY__H*/
+/*basic functions related to doubly linked list*/
+stack_t *add_node(stack_t **head, const int n);
+void free_stack(stack_t *head);
+stack_t *pop_s(stack_t **head);
+stack_t *dequeue(stack_t **head);
+
+/*functions to print the stack or queue*/
+void pall(stack_t **h, unsigned int l);
+void pstr(stack_t **h, unsigned int l);
+void pchar(stack_t **h, unsigned int l);
+void pint(stack_t **h, unsigned int l);
+
+/*in push_and_pop*/
+void pop(stack_t **h, unsigned int l);
+void push (stack_t **h, char *line, unsigned int l);
+
+/*in move_elements_functions*/
+void swap(stack_t **h, unsigned int l);
+void rotl(stack_t **h, unsigned int l);
+void rotr(stack_t **h, unsigned int l);
+
+/*in calculations*/
+int get_argument(stack_t **h, char *opcode, unsigned int l);
+void _add(stack_t **h, unsigned int l);
+void _sub(stack_t **h, unsigned int l);
+void _div(stack_t **h, unsigned int l);
+void _mul(stack_t **h, unsigned int l);
+void _mod(stack_t **h, unsigned int l);
+
+/*in nopandqueue*/
+void stack(stack_t **h, unsigned int l);
+void queue(stack_t **h, unsigned int l);
+void nop(stack_t **h, unsigned int l);
+
+/*in helpers*/
+char *skip_spaces(char *s);
+char *reach_number(char *s);
+int _strcmp(char *s1, char *s2);
+int _strncmp(char *s1, char *s2, int n);
+int _strlen(char *s);
+
+
+/*in execute*/
+void execute(stack_t **h, char *line, unsigned int line_number);
+
+/*in main*/
+int main(int ac, char **av);
+
+#endif
