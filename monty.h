@@ -1,15 +1,14 @@
-#ifndef _MONTY_H_
-#define _MONTY_H_
+#ifndef __HOOLB__
+#define __HOOLB__
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-/*extern variable, stack or queue*/
-
-extern char *flag;
-
-#define LINE_LENGTH 32
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/syscall.h>
+#include <string.h>
 
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
@@ -22,13 +21,13 @@ extern char *flag;
  */
 typedef struct stack_s
 {
-        int n;
-        struct stack_s *prev;
-        struct stack_s *next;
+	int n;
+	struct stack_s *prev;
+	struct stack_s *next;
 } stack_t;
 
 /**
- * struct instruction_s - opcoode and its function
+ * struct instruction_s - opcode and its function
  * @opcode: the opcode
  * @f: function to handle the opcode
  *
@@ -37,58 +36,23 @@ typedef struct stack_s
  */
 typedef struct instruction_s
 {
-        char *opcode;
-        void (*f)(stack_t **stack, unsigned int line_number);
+	char *opcode;
+	void (*f)(stack_t **stack, unsigned int line_num);
 } instruction_t;
 
-
-
-/*basic functions related to doubly linked list*/
-stack_t *add_node(stack_t **head, const int n);
+void pint(stack_t **stack, unsigned int line_num);
 void free_stack(stack_t *head);
-stack_t *pop_s(stack_t **head);
-stack_t *dequeue(stack_t **head);
+int pushint(char *list, int ln);
+int _strcmp(char *opcode, char *list);
+void add(stack_t **stack, unsigned int line_num);
+void swap(stack_t **stack, unsigned int line_num);
+void pop(stack_t **stack, unsigned int line_num);
+void push(stack_t **stack, unsigned int line_number, int n);
+void pall(stack_t **stack, unsigned int line_num);
+void execute(char *string[], stack_t *stack);
+int nlfind(char *list);
+void free_list(char *a[]);
+int combfind(char *list, int ln);
 
-/*functions to print the stack or queue*/
-void pall(stack_t **h, unsigned int l);
-void pstr(stack_t **h, unsigned int l);
-void pchar(stack_t **h, unsigned int l);
-void pint(stack_t **h, unsigned int l);
-
-/*in push_and_pop*/
-void pop(stack_t **h, unsigned int l);
-void push (stack_t **h, char *line, unsigned int l);
-
-/*in move_elements_functions*/
-void swap(stack_t **h, unsigned int l);
-void rotl(stack_t **h, unsigned int l);
-void rotr(stack_t **h, unsigned int l);
-
-/*in calculations*/
-int get_argument(stack_t **h, char *opcode, unsigned int l);
-void _add(stack_t **h, unsigned int l);
-void _sub(stack_t **h, unsigned int l);
-void _div(stack_t **h, unsigned int l);
-void _mul(stack_t **h, unsigned int l);
-void _mod(stack_t **h, unsigned int l);
-
-/*in nopandqueue*/
-void stack(stack_t **h, unsigned int l);
-void queue(stack_t **h, unsigned int l);
-void nop(stack_t **h, unsigned int l);
-
-/*in helpers*/
-char *skip_spaces(char *s);
-char *reach_number(char *s);
-int _strcmp(char *s1, char *s2);
-int _strncmp(char *s1, char *s2, int n);
-int _strlen(char *s);
-
-
-/*in execute*/
-void execute(stack_t **h, char *line, unsigned int line_number);
-
-/*in main*/
-int main(int ac, char **av);
 
 #endif

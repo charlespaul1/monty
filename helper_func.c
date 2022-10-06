@@ -1,114 +1,114 @@
-
-
 #include "monty.h"
 
-/*maybe create _exit here, if ever we feel the need for it*/
-
-/* these function do not take # into account yet*/
-
 /**
- * _strlen - string length
- * @s: string
- * Return: length of string
+ * _strcmp - compares strings
+ * @opcode: a string to be compared
+ * @list: a string to be compared
+ * Return: 0
  */
-int _strlen(char *s)
+int _strcmp(char *opcode, char *list)
 {
-	int i;
-
-	for (i = 0; *(s + i); ++i)
-		;
-	return (i);
-}
-
-
-/**
- * skip_spaces - skip whitespaces
- * @s: a string
- *
- * Return: pointer to where is the first non space char or NULL
- */
-char *skip_spaces(char *s)
-{
-	if (!s)
-		return (NULL);
-
-	while (*s && *s == ' ')
-		++s;
-	if (*s == '\0') /*empty string*/
-		return (NULL);
-
-	return (s);
-}
-
-/*use strncmp with this return value, opcode and strlen(opcode)*/
-
-
-/**
- * reach_number - get the first number in a string
- * @s:
- * the string should contain only spaces and a valid opcode before
- * Return: a pointer to where the number is or NULL
- */
-char *reach_number(char *s)
-{
-	if (!s)
-		return (NULL);
-
-	while (*s && (*s < '0' || *s > '9'))
-		++s;
-
-	if (*s == '\0')
-		return (NULL);
-	return (s);
-}
-
-/*use atoi with this return value*/
-
-
-/**
- * _strcmp - compare 2 strings see strcmp()
- * @s1: string to compare
- * @s2: string used as reference
- * Return: It returns the difference in value of the first characters where
- * s1 and s2 disagree
-*/
-int _strcmp(char *s1, char *s2)
-{
-	int i;
-
-	i = 0;
-	while (*(s1 + i) == *(s2 + i) && *(s1 + i) != '\0' && *(s2 + i) != '\0')
-		i++;
-	return (*(s1 + i) - *(s2 + i));
-}
-
-
-
-/**
- * _strncmp - compare 2 strings see strcmp()
- * @s1: string to compare
- * @s2: opcode
- * @n: length of opcode to compare
- * Return: It returns 0 if OK
-*/
-int _strncmp(char *s1, char *s2, int n)
-{
-	int i;
-
-	i = 0;
-	while (*(s1 + i) != '\0' && *(s2 + i) != '\0' && i < n)
+	while (*list != '\0')
 	{
-		if (*(s1 + i) == *(s2 + i))
+		if (*list == ' ')
+			list++;
+		else if (*opcode == *list)
 		{
-			++i;
+			opcode++;
+			list++;
+			if (*opcode == '\0' && (*list == ' ' || *list == '\n' || *list == '\0'))
+				return (1);
 		}
 		else
+			return (0);
+	}
+	return (0);
+}
+
+/**
+ * nlfind - finds newline
+ * @list: the string to find \n
+ * Return: 1 || 0
+ */
+int nlfind(char *list)
+{
+	char *opcode = "\n";
+
+	while (*list != '\0')
+	{
+		if (*opcode == *list)
 		{
-			return (*(s1 + i) - *(s2 + i));
+			opcode++;
+			list++;
+			if (*opcode == '\0')
+				return (1);
+		}
+		else
+			list++;
+	}
+	return (0);
+}
+
+/**
+ * pushint - int for push opcode
+ * @list: the content of the file
+ * @ln: line number
+ * Return: the number
+ */
+int pushint(char *list, int ln)
+{
+	char *opcode = "push";
+
+	while (*list != '\0')
+	{
+		if (*opcode == *list)
+		{
+			opcode++;
+			list++;
+			if (*opcode == '\0')
+				while (*list)
+				{
+					if ((*list >= '0' && *list <= '9') || *list == '-')
+					{
+						combfind(list, ln);
+						return (atoi(list));
+					}
+					else if (*list == ' ')
+						list++;
+					else
+					{
+						fprintf(stderr, "L%d: usage: push integer\n", ln);
+						exit(EXIT_FAILURE);
+					}
+				}
+		}
+		else
+			list++;
+	}
+	return (0);
+}
+
+/**
+ * combfind - finds nonnumbers and number combinations
+ * @list: the string
+ * @ln: line number
+ * Return: 1
+ */
+int combfind(char *list, int ln)
+{
+	int i = 1;
+
+	while (list[i])
+	{
+		if (list[i] == '\0' || list[i] == '\n')
+			break;
+		if ((list[i] >= '0' && list[i] <= '9') || list[i] == ' ')
+			i++;
+		else
+		{
+			fprintf(stderr, "L%d: usage: push integer\n", ln);
+			exit(EXIT_FAILURE);
 		}
 	}
-	if (i == n && (*(s1 + i) == ' ' || *(s1 + i) == '\t' ||
-		       *(s1 + i) == '\0' || *(s1 + i) == '\n'))
-		return (0);
-	return (EXIT_FAILURE); /* one of the strings was too short, not the best*/
+	return (1);
 }
